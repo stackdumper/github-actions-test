@@ -1,9 +1,27 @@
 workflow "New workflow" {
   on = "push"
-  resolves = ["GitHub Action for Docker"]
+  resolves = ["push"]
 }
 
-action "GitHub Action for Docker" {
-  uses = "actions/docker/cli@aea64bb1b97c42fa69b90523667fef56b90d7cff"
+action "build" {
+  uses = "actions/docker/cli@master"
   args = "build -t github-actions-test ."
+}
+
+action "login" {
+  uses = "actions/docker/login@master"
+  secrets = ["DOCKER_USERNAME", "DOCKER_PASSWORD"]
+}
+
+action "tag" {
+  uses = "actions/docker/cli@master"
+  needs = ["build"]
+  args = "tag github-actions-test github-actions-test:${GITHUB_REF}-${GITHUB_SHA:0:6}"
+}
+
+
+action "push" {
+  uses = "actions/docker/cli@master"
+  needs = ["build", "login", "tag"]
+  args = "push github-actions-test:${GITHUB_REF}-${GITHUB_SHA:0:6}"
 }
