@@ -16,12 +16,12 @@ action "login" {
 action "tag" {
   uses = "actions/docker/cli@master"
   needs = ["build"]
-  args = "tag github-actions-test github-actions-test:${${GITHUB_REF##*/}}-${GITHUB_SHA:0:6}"
+  args = "tag github-actions-test github-actions-test:${echo $GITHUB_REF | grep -o '[^/]*$'}-${GITHUB_SHA:0:6}"
   runs = "/bin/bash"
 }
 
 action "push" {
   uses = "actions/docker/cli@master"
   needs = ["build", "login", "tag"]
-  args = "push github-actions-test:${GITHUB_REF}-${GITHUB_SHA:0:6}"
+  args = "push github-actions-test:${echo $GITHUB_REF | grep -o '[^/]*$'}-${GITHUB_SHA:0:6}"
 }
