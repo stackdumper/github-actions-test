@@ -1,6 +1,6 @@
 .PHONY:
 build:
-	docker build -f actions/build/Dockerfile -t github-actions-test .
+	docker build -t github-actions-test .
 
 .PHONY:
 run:
