@@ -17,7 +17,6 @@ action "tag" {
   uses = "actions/docker/cli@master"
   needs = ["build"]
   args = "tag github-actions-test github-actions-test:${echo $GITHUB_REF | grep -o '[^/]*$'}-${GITHUB_SHA:0:6}"
-  runs = "/bin/bash"
 }
 
 action "push" {
